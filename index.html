@@ -33,7 +33,7 @@
       });
 
       $(document).ready(function(){
-        var params = { allowScriptAccess: "always" };
+        var params = { allowScriptAccess: "always", wmode: "transparent" };
         var attrs = { id: "b0xx" };
         swfobject.embedSWF(
           "http://www.youtube.com/apiplayer?enablejsapi=1&version=3&showinfo=1", 
@@ -55,14 +55,14 @@
       }
       
       function onYouTubePlayerStateChange(state) {
-        // console.log("Player's new state: " + state);
+        console.log("Player's new state: " + state);
         if ( state == 0 ) {
           socket.emit('next');
         }
       }
       
       function onYouTubePlayerError(error) {
-        // console.log('YouTube error: ' + error);
+        console.log('YouTube error: ' + error);
         socket.emit('next');
       }
     </script>
@@ -95,9 +95,9 @@
     </style>
   </head>
   <body>
-    <div id="status"><span class="message"></span></div>
     <div id="ytapiplayer">
       You need Flash player 8+ and JavaScript enabled to view this video.
     </div>
+    <div id="status"><span class="message"></span></div>    
   </body>
 </html>
