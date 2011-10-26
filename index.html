@@ -55,14 +55,14 @@
       }
       
       function onYouTubePlayerStateChange(state) {
-        console.log("Player's new state: " + state);
+        // console.log("Player's new state: " + state);
         if ( state == 0 ) {
           socket.emit('next');
         }
       }
       
       function onYouTubePlayerError(error) {
-        console.log('YouTube error: ' + error);
+        // console.log('YouTube error: ' + error);
         socket.emit('next');
       }
     </script>
