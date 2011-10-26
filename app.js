@@ -105,6 +105,14 @@ app.post('/incoming', function (req, res) {
   request.end();
 });
 
+app.post('/photo', function (req, res){
+  var photo = req.body.photo;
+  console.log('Received photo: ' + photo);
+  io.sockets.emit('photo', photo);
+  
+  res.send("Received photo :)", {'Content-Type':'text/plain'}, 200);
+});
+
 io.sockets.on('connection', function (socket) {
   socket.on('next', function(){
     play_next();

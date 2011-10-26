@@ -31,6 +31,20 @@
       socket.on('volume', function(volume) {
         player.setVolume(volume);
       });
+      
+      socket.on('photo', function(photo_src){
+        if ($('#photo').is('img')) return;
+        
+        $('body').append('<img id="photo" src="' + photo_src + '" alt="" style="display:none" />');
+        
+        $('#photo').fadeIn(2000, function(){
+          setTimeout(function(){
+            $('#photo').fadeOut('slow', function(){
+              $(this).remove();
+            });            
+          }, 2000);
+        });
+      });
 
       $(document).ready(function(){
         var params = { allowScriptAccess: "always", wmode: "transparent" };
@@ -91,6 +105,16 @@
         background-image: url(http://img.37i.net/pixel_000000_30.png);
         text-align: center;
         padding: .75em 0;
+      }
+      
+      #photo {
+        position: absolute;
+        left: 50px;
+        top: 50px;
+        -moz-transform: rotate(-5deg);
+        -webkit-transform: rotate(-5deg);
+        max-width: 200px;
+        box-shadow: 2px 2px 8px #000;
       }
     </style>
   </head>
