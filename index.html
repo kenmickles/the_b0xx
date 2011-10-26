@@ -9,34 +9,34 @@
       var start_video = '82mWhYp5a-Q';
       var start_volume = 0;      
       var default_status = 'Text video requests to <strong>215-240-7723</strong>';
-    	var socket = io.connect(location.href);
-    	var player;
+      var socket = io.connect(location.href);
+      var player;
 
-    	socket.on('play', function (video_id) {
-    	  player.loadVideoById(video_id);
-    	});
-    	
-    	socket.on('status', function(message){
-    	  var $div = $('#status .message');
-    	  $div.fadeOut('slow', function(){
-    	    $div.html(message).fadeIn('fast');
-      	  setTimeout(function(){
-      	    $div.fadeOut('slow', function(){
-      	      $div.html(default_status).fadeIn('fast');
-      	    });
-      	  }, 3000);
-      	});
-    	});
-    	
-    	socket.on('volume', function(volume) {
-    	  player.setVolume(volume);
-    	});
+      socket.on('play', function (video_id) {
+        player.loadVideoById(video_id);
+      });
+      
+      socket.on('status', function(message){
+        var $div = $('#status .message');
+        $div.fadeOut('slow', function(){
+          $div.html(message).fadeIn('fast');
+          setTimeout(function(){
+            $div.fadeOut('slow', function(){
+              $div.html(default_status).fadeIn('fast');
+            });
+          }, 3000);
+        });
+      });
+      
+      socket.on('volume', function(volume) {
+        player.setVolume(volume);
+      });
 
-    	$(document).ready(function(){
-    	  var params = { allowScriptAccess: "always" };
-      	var attrs = { id: "b0xx" };
-      	swfobject.embedSWF(
-      	  "http://www.youtube.com/apiplayer?enablejsapi=1&version=3&showinfo=1", 
+      $(document).ready(function(){
+        var params = { allowScriptAccess: "always" };
+        var attrs = { id: "b0xx" };
+        swfobject.embedSWF(
+          "http://www.youtube.com/apiplayer?enablejsapi=1&version=3&showinfo=1", 
           "ytapiplayer", "425", "356", "8", null, null, params, attrs);
 
         // swfobject.embedSWF(
@@ -44,26 +44,26 @@
         //           "ytapiplayer", "425", "356", "8", null, null, params, attrs);
         
         $('#status .message').html(default_status);
-    	});
-	
-    	function onYouTubePlayerReady(playerId) {
-      	player = document.getElementById("b0xx");
-      	player.setVolume(start_volume);
-      	player.loadVideoById(start_video);
-      	player.addEventListener('onStateChange', 'onYouTubePlayerStateChange');
-      	player.addEventListener('onError', 'onYouTubePlayerError');
+      });
+  
+      function onYouTubePlayerReady(playerId) {
+        player = document.getElementById("b0xx");
+        player.setVolume(start_volume);
+        player.loadVideoById(start_video);
+        player.addEventListener('onStateChange', 'onYouTubePlayerStateChange');
+        player.addEventListener('onError', 'onYouTubePlayerError');
       }
       
       function onYouTubePlayerStateChange(state) {
         console.log("Player's new state: " + state);
-    		if ( state == 0 ) {
-    			socket.emit('next');
-    		}
+        if ( state == 0 ) {
+          socket.emit('next');
+        }
       }
       
       function onYouTubePlayerError(error) {
-      	console.log('YouTube error: ' + error);
-      	socket.emit('next');
+        console.log('YouTube error: ' + error);
+        socket.emit('next');
       }
     </script>
     <style type="text/css">
@@ -97,7 +97,7 @@
   <body>
     <div id="status"><span class="message"></span></div>
     <div id="ytapiplayer">
-    	You need Flash player 8+ and JavaScript enabled to view this video.
+      You need Flash player 8+ and JavaScript enabled to view this video.
     </div>
   </body>
 </html>
