@@ -4,12 +4,6 @@ var express = require('express');
 var app = express.createServer()
 var io = require('socket.io').listen(app);
 
-var db = require('mysql').createClient({
-  user: process.env.MYSQL_USER,
-  password: process.env.MYSQL_PASS,
-});
-db.useDatabase(process.env.MYSQL_DB);
-
 app.configure(function(){
   // app.set('views', __dirname + '/views');
   // app.set('view engine', 'jade');
@@ -57,7 +51,7 @@ app.post('/incoming', function (req, res) {
   var options = {
       host: 'gdata.youtube.com',
       port: 80,
-      path: '/feeds/api/videos?q=' + querystring.stringify({q: query, alt: 'json'}),
+      path: '/feeds/api/videos?' + querystring.stringify({q: query, alt: 'json'}),
       method: 'GET'
   };
   
@@ -72,6 +66,7 @@ app.post('/incoming', function (req, res) {
 
     response.on("end", function () {
       var data = JSON.parse(body.join(""));
+      var db = fetch_db();
       
       // fail! return error message and exit
       if ( typeof(data.feed.entry) == 'undefined' ) {
@@ -125,6 +120,8 @@ io.sockets.on('connection', function (socket) {
 });
 
 function play_next() {
+  var db = fetch_db();
+  
   // find next video in queue
   db.query('SELECT * FROM queue ORDER BY created_at LIMIT 1', function(err, results, fields){
     if (err) throw err;
@@ -162,4 +159,13 @@ function play_next() {
       });
     }
   });
+}
+
+function fetch_db() {
+  var db = require('mysql').createClient({
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASS,
+  });
+  db.useDatabase(process.env.MYSQL_DB);
+  return db;
 }
