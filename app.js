@@ -74,7 +74,7 @@ app.post('/incoming', function (req, res) {
       var data = JSON.parse(body.join(""));
       
       // fail! return error message and exit
-      if ( typeof(data.feed.entry[0]) == 'undefined' ) {
+      if ( typeof(data.feed.entry) == 'undefined' ) {
         var twiml = '<?xml version="1.0" encoding="UTF-8" ?>\n<Response>\n<Sms>Sorry, but I couldn\'t find your video :(</Sms>\n</Response>';
         res.send(twiml, {'Content-Type':'text/xml'}, 200);
         return;
