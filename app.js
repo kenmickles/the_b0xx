@@ -66,7 +66,6 @@ app.post('/incoming', function (req, res) {
 
     response.on("end", function () {
       var data = JSON.parse(body.join(""));
-      var db = fetch_db();
       
       // fail! return error message and exit
       if ( typeof(data.feed.entry) == 'undefined' ) {
@@ -81,6 +80,7 @@ app.post('/incoming', function (req, res) {
       console.log('Found #' + video_id + ': ' + title);
               
       // queue video
+      var db = fetch_db();      
       db.query('INSERT IGNORE INTO queue (video_id) VALUES (?)', [video_id], function(err){
         // fetch queue position
         db.query('SELECT COUNT(*) AS position FROM queue', function(err, results){
@@ -92,6 +92,9 @@ app.post('/incoming', function (req, res) {
           
           // update client status
           io.sockets.emit('status', message);
+          
+          // clean up
+          db.end();          
         });
       });
     });
@@ -137,6 +140,9 @@ function play_next() {
       
       // start playing video
       io.sockets.emit('play', video_id);
+      
+      // clean up
+      db.end();      
     }
     // nothing in queue. find next video in library      
     else {
@@ -153,9 +159,12 @@ function play_next() {
         else {
           var video_id = 'vgSn0SbQJQI';
         }
-        
+                
         // play video
         io.sockets.emit('play', video_id);
+        
+        // clean up
+        db.end();
       });
     }
   });
